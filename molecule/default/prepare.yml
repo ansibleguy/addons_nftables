@@ -2,13 +2,30 @@
 
 - name: Prepare
   hosts: all
-  tasks:
-    - name: Installing troubleshooting utils
-      apt:
-        name: ['less', 'nano', 'net-tools', 'dnsutils', 'iproute2']
-        state: present
+  vars:
+    nftables:
+      enable:
+        sets: false  # debian (11) kernel 5.x does not support it
 
-    - name: Installing Role dependencies
-      apt:
-        name: ['kmod']
-        state: present
+      tables:
+        example:
+          chains:
+            incoming:
+              vars:
+                chain_var: '1.1.1.1'
+
+              hook: 'input'
+              rules:
+                - sequence: 1
+                  raw: 'ct state invalid counter log prefix "DROP invalid sates" drop'
+                - seq: 2
+                  raw: 'ct state {established, related} counter accept comment "Allow open sessions"'
+                - s: 3
+                  raw: 'iifname "lo" accept comment "Allow loopback traffic"'
+
+            outgoing:
+              hook: 'output'
+              policy: 'accept'
+
+  roles:
+    - ansibleguy.infra_nftables

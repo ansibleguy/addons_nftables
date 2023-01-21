@@ -1,11 +1,11 @@
 # {{ ansible_managed }}
-# ansibleguy.infra_mariadb
+# ansibleguy.addons_nftables
 
 [Unit]
-Description=Timer to create a local backup of the mariadb instance {{ name }}
+Description=Timer to process NFTables Add-On '{{ addon_key }}'
 
 [Timer]
-OnCalendar={{ backup.time }}
+OnCalendar={{ NTF_ADD_CONFIG.timer.systemd[addon_key] }}
 Persistent=false
 WakeSystem=false
 

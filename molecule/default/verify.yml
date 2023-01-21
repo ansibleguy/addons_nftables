@@ -1,13 +1,18 @@
 ---
 
 - name: Verify
-  hosts: grp_tester
+  hosts: all
   gather_facts: false
-  tasks: []
-  #  - name: Checking if zoneminder web-service is reachable
-  #    ansible.builtin.uri:
-  #      url: 'https://192.168.0.2'
-  #      return_content: yes
-  #      validate_certs: false
-  #    register: page
-  #    failed_when: "'Zoneminder' not in page.content"
+  tasks:
+    - name: Checking that config is valid
+      ansible.builtin.command: "nft -cf {{ item }}"
+      changed_when: false
+      loop:
+        - '/etc/nftables.d/addons/dns.nft'
+        - '/etc/nftables.d/addons/iplist.nft'
+        - '/etc/nftables.conf'
+
+    - name: Checking that service survives restart
+      ansible.builtin.systemd:
+        name: 'nftables.service'
+        state: restarted

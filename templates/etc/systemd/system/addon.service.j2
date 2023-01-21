@@ -1,27 +1,21 @@
 # {{ ansible_managed }}
-# ansibleguy.infra_mariadb
-
-# NOTE:
-#   restore: xzcat /var/backups/mysql/{{ name }}_{DATETIME}.sql.xz | mysql
+# ansibleguy.addons_nftables
 
 [Unit]
-Description=Service to create a local backup of the mariadb instance {{ name }}
-Documentation=https://github.com/ansibleguy/infra_mariadb
-Requires=mariadb@{{ name }}.service
-ConditionPathExists={{ MARIADB_CONFIG.config.path_config }}/client_{{ name }}_backup.cnf
-ConditionPathExists={{ path_backup }}
-ConditionPathExists={{ socket }}
+Description=Service to process NFTables Add-On '{{ addon_key }}'
+Documentation=https://github.com/ansibleguy/addons_nftables
+Requires=nftables.service
 
 [Service]
 Type=simple
-User={{ instance.settings.user }}
-Group={{ instance.settings.group }}
-ExecStart=/usr/local/sbin/backup_mariadb_{{ name }}.sh
-{% if ansible_distribution_version == '10' %}
+User={{ NTF_ADD_CONFIG.timer.systemd.user }}
+Group={{ NTF_ADD_CONFIG.timer.systemd.group }}
+ExecStart=python3 {{ NTF_ADD_CONFIG.path.lib }}/{{ addon_key }}.py
+{% if ansible_distribution | lower == 'debian' and ansible_distribution_version == '10' %}
 StandardOutput=syslog
 StandardError=syslog
 {% else %}
 StandardOutput=journal
 StandardError=journal
 {% endif %}
-SyslogIdentifier=mariadb_backup_{{ name }}
+SyslogIdentifier={{ NTF_ADD_CONFIG.timer.systemd.syslog_id_prefix }}_{{ addon_key }}

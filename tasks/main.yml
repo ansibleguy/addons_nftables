@@ -4,3 +4,59 @@
   ansible.builtin.assert:
     that:
       - nftables_addons is defined
+      - NFT_ADD_CONFIG.enable.dns | bool or NFT_ADD_CONFIG.enable.iplist | bool
+  tags: always
+
+- name: "NFTables-Addons | Checking Python3 version (must be >= {{ NFT_ADD_HC.min_py3_version }})"
+  ansible.builtin.shell: |
+    set -o pipefail
+    python3 --version | cut -d ' ' -f2
+  args:
+    executable: '/bin/bash'
+  changed_when: false
+  check_mode: false
+  register: nft_py_version
+  failed_when: nft_py_version.stdout is version(NFT_ADD_HC.min_py3_version, '<')
+  tags: always
+
+- name: NFTables-Addons | Checking that NFTables is installed
+  ansible.builtin.package:
+    name: 'nftables'
+    state: present
+  check_mode: true
+  register: nft_package
+  failed_when: nft_package.changed
+  tags: always
+
+- name: NFTables-Addons | Creating directories
+  ansible.builtin.file:
+    state: directory
+    owner: 'root'
+    group: 'root'
+    mode: 0750
+    path: "{{ item }}"
+  loop:
+    - "{{ NFT_ADD_CONFIG.path.lib }}"
+    - "{{ NFT_ADD_CONFIG.path.addon.dir }}"
+
+- name: NFTables-Addons | Copying util-script
+  ansible.builtin.template:
+    src: 'templates/usr/lib/nftables/util.py'
+    dest: "{{ NTF_ADD_CONFIG.path.lib }}/util.py"
+    owner: 'root'
+    group: 'root'
+    mode: 0750
+
+- name: NFTables-Addons | DNS Addon
+  ansible.builtin.import_tasks: dns.yml
+  when:
+    - NFT_ADD_CONFIG.enable.dns | bool
+    - NFT_ADD_CONFIG.config.dns_records | length > 0
+  tags: dns
+
+- name: NFTables-Addons | IP-List Addon
+  ansible.builtin.import_tasks: iplist.yml
+  when:
+    - NFT_ADD_CONFIG.enable.iplist | bool
+    - NFT_ADD_CONFIG.config.iplists | length > 0
+  tags: iplist

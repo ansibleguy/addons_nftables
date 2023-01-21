@@ -1,0 +1,1 @@
+# copies of the actual scripts without jinja2 templating - so it can be validated using pylint

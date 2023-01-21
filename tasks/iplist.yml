@@ -1,0 +1,17 @@
+---
+
+- name: NFTables-Addons | IP-List | Copying script
+  ansible.builtin.template:
+    src: 'templates/usr/lib/nftables/iplist.py'
+    dest: "{{ NTF_ADD_CONFIG.path.lib }}/iplist.py"
+    owner: 'root'
+    group: 'root'
+    mode: 0750
+
+- name: NFTables-Addons | IP-List | Timer
+  ansible.builtin.include_tasks: timer/main.yml
+  vars:
+    addon_key: 'iplist'
+  args:
+    apply:
+      tags: iplist

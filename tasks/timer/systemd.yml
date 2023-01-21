@@ -1,0 +1,19 @@
+---
+
+- name: "NFTables-Addons | Timer Systemd | {{ addon_key }} | Adding timer"
+  ansible.builtin.template:
+    src: "templates/etc/systemd/system/addon.{{ item }}.j2"
+    dest: "/etc/systemd/system/{{ systemd_name }}.{{ item }}"
+    mode: 0644
+    owner: 'root'
+    group: 'root'
+  loop:
+    - 'service'
+    - 'timer'
+
+- name: "NFTables-Addons | Timer Systemd | {{ addon_key }} | Starting/Enabling timer"
+  ansible.builtin.systemd:
+    name: "{{ systemd_name }}.timer"
+    state: started
+    enabled: true
+    daemon_reload: yes

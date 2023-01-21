@@ -4,8 +4,62 @@ no_prompts: false
 debug: false
 
 # default config => is overwritten by provided config
-defaults_app: {}
+defaults_nftables_addons:
+  enable:
+    dns: false
+    dns_v6: false
+    iplist: false
+    iplist_v6: false
+    timer: true
+    systemd: true
+    cron: false
 
-APP_CONFIG: "{{ defaults_app | combine(app, recursive=true) }}"
+  appendix:  # will be appended to the var-names
+    ipv4: ''
+    ipv6: 'v6'
 
-defaults_instance: {}
+  config:
+    iplists: {}
+    #  variable:
+    #    urls: ['https://check.torproject.org/torbulkexitlist']
+    #    separator: "\n"
+    dns_records: {}
+    #  variable: ['dns1', 'dns2']
+
+  path:
+    lib: '/usr/lib/nftables'
+    base_config: '/etc/nftables.conf'
+    addon:
+      dir: '/etc/nftables.d/addons'
+      dns: 'dns.nft'
+      dns_dump: 'dns.json'
+      iplist: 'iplist.nft'
+      iplist_dump: 'iplist.json'
+
+  cmd_reload: 'sudo systemctl restart nftables.service'  # if no systemd is available: use 'sudo nft -f { base_config }'
+
+  timer:
+    systemd:
+      # for date-time format see:
+      #   https://wiki.archlinux.org/title/Systemd/Timers
+      #   https://silentlad.com/systemd-timers-oncalendar-(cron)-format-explained
+      dns: '*:0/15'  # every 15min
+      iplist: '*-*-* 00,12:00:00'  # twice a day
+      user: 'root'
+      group: 'root'
+      syslog_id_prefix: 'nftables_addon'
+      service_prefix: 'ansibleguy.addons_nftables-'
+
+    cron:  # see module: ansible.builtin.cron and https://crontab.guru/
+      dns:  # every 15min
+        minute: '*/15'
+        hour:
+        day:
+        weekday:
+      iplist:  # twice a day
+        minute: '0'
+        hour: '0,12'
+        day:
+        weekday:
+
+NTF_ADD_CONFIG: "{{ defaults_nftables_addons | combine(nftables_addons, recursive=true) }}"

@@ -16,6 +16,8 @@ _references:
 
 dependency:
   name: galaxy
+  options:
+    role-file: 'requirements_roles.yml'
 driver:
   name: docker
 platforms:

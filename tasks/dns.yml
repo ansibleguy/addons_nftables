@@ -1,0 +1,25 @@
+---
+
+- name: NFTables-Addons | DNS | Copying helper-script
+  ansible.builtin.copy:
+    src: 'files/usr/lib/nftables/dns_resolver.py'
+    dest: "{{ NTF_ADD_CONFIG.path.lib }}/dns_resolver.py"
+    owner: 'root'
+    group: 'root'
+    mode: 0750
+
+- name: NFTables-Addons | DNS | Copying script
+  ansible.builtin.template:
+    src: 'templates/usr/lib/nftables/dns.py'
+    dest: "{{ NTF_ADD_CONFIG.path.lib }}/dns.py"
+    owner: 'root'
+    group: 'root'
+    mode: 0750
+
+- name: NFTables-Addons | DNS | Timer
+  ansible.builtin.include_tasks: timer/main.yml
+  vars:
+    addon_key: 'dns'
+  args:
+    apply:
+      tags: dns

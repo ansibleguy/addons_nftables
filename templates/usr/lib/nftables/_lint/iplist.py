@@ -7,14 +7,13 @@ from ipaddress import IPv4Network, IPv6Network, IPv4Address, IPv6Address, Addres
 
 from util import validate_and_write, load_config, format_var
 
-PROCESS_IPv6 = {% if NTF_ADD_CONFIG.enable.iplist_v6 %}True{% else %}False{% endif %}
-APPENDIX_4 = '{{ NTF_ADD_CONFIG.appendix.ipv4 }}'
-APPENDIX_6 = '{{ NTF_ADD_CONFIG.appendix.ipv6 }}'
-DUMP_FILE = '{{ NTF_ADD_CONFIG.path.addon.dir }}/{{ NTF_ADD_CONFIG.path.addon.iplist_dump }}'
-DUMP_FILE_KEY = '{{ NFT_ADD_HC.dump_keys.iplist }}'
-OUT_FILE = '{{ NTF_ADD_CONFIG.path.addon.dir }}/{{ NTF_ADD_CONFIG.path.addon.iplist }}'
+PROCESS_IPv6 = True
+APPENDIX_4 = ''
+APPENDIX_6 = 'v6'
+DUMP_FILE = '/etc/nftables.d/addons/iplist.json'
+DUMP_FILE_KEY = 'iplist'
+OUT_FILE = '/etc/nftables.d/addons/iplist.nft'
 
-{% raw %}
 
 def _filter_result_protocol(protocol: int, results: list) -> list:
     filtered = []
@@ -95,5 +94,3 @@ for var, iplist_config in CONFIG.items():
             )
 
 validate_and_write(lines=lines, file=OUT_FILE, key=DUMP_FILE_KEY)
-
-{% endraw %}

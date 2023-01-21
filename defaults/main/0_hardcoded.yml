@@ -1,3 +1,8 @@
 ---
 
-
+NFT_ADD_HC:
+  min_py3_version: '3.3'  # 'ipaddress' builtin
+  dump_keys:
+    dns: 'dns'
+    iplist: 'iplist'
+  cron_prefix: 'nftables_addon'

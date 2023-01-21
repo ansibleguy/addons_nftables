@@ -1,0 +1,17 @@
+---
+
+- name: NFTables-Addons | Timer | Cron
+  ansible.builtin.include_tasks: timer/cron.yml
+  when:
+    - NTF_ADD_CONFIG.enable.timer | bool
+    - NTF_ADD_CONFIG.enable.cron | bool
+    - not NTF_ADD_CONFIG.enable.systemd | bool
+
+- name: NFTables-Addons | Timer | Systemd
+  ansible.builtin.include_tasks: timer/systemd.yml
+  vars:
+    systemd_name: "{{ NTF_ADD_CONFIG.timer.systemd.service_prefix }}{{ addon_key }}"
+  when:
+    - NTF_ADD_CONFIG.enable.timer | bool
+    - NTF_ADD_CONFIG.enable.systemd | bool
+    - not NTF_ADD_CONFIG.enable.cron | bool

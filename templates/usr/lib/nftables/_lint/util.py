@@ -7,10 +7,9 @@ from subprocess import PIPE as subprocess_pipe
 from json import loads as json_loads
 from json import JSONDecodeError
 
-CMD_RELOAD = "{{ NTF_ADD_CONFIG.cmd_reload }}"
-CONFIG = "{{ NTF_ADD_CONFIG.path.base_config }}"
+CMD_RELOAD = 'sudo systemctl restart nftables.service'
+CONFIG = '/etc/nftables.conf'
 
-{% raw %}
 FALLBACK_VAR_VALUE = {
     4: '0.0.0.0',
     6: '::/0',
@@ -40,19 +39,19 @@ def load_config(file: str, key: str = None) -> (dict, list, None):
             if key is None:
                 return json_loads(_cnf.read())
 
-            else:
-                return json_loads(_cnf.read())[key]
+            return json_loads(_cnf.read())[key]
 
         except JSONDecodeError:
             return None
+
 
 def _exec(cmd: (str, list)) -> int:
     if isinstance(cmd, str):
         cmd = cmd.split(' ')
 
-    p = subprocess_popen(cmd, stdout=subprocess_pipe)
-    _ = p.communicate()[0]
-    return p.returncode
+    with subprocess_popen(cmd, stdout=subprocess_pipe) as p:
+        _ = p.communicate()[0]
+        return p.returncode
 
 
 def _reload() -> bool:
@@ -85,5 +84,3 @@ def validate_and_write(key: str, lines: list, file: str):
 
     else:
         raise SystemExit(f"Failed to validate test-config: '{file_tmp}'!")
-
-{% endraw %}

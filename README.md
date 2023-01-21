@@ -10,6 +10,7 @@ Role to deploy Addons for NFTables on Linux servers.
 
 [![Molecule Test Status](https://badges.ansibleguy.net/addons_nftables.molecule.svg)](https://github.com/ansibleguy/_meta_cicd/blob/latest/templates/usr/local/bin/cicd/molecule.sh.j2)
 [![YamlLint Test Status](https://badges.ansibleguy.net/addons_nftables.yamllint.svg)](https://github.com/ansibleguy/_meta_cicd/blob/latest/templates/usr/local/bin/cicd/yamllint.sh.j2)
+[![PyLint Test Status](https://badges.ansibleguy.net/addons_nftables.pylint.svg)](https://github.com/ansibleguy/_meta_cicd/blob/latest/templates/usr/local/bin/cicd/pylint.sh.j2)
 [![Ansible-Lint Test Status](https://badges.ansibleguy.net/addons_nftables.ansiblelint.svg)](https://github.com/ansibleguy/_meta_cicd/blob/latest/templates/usr/local/bin/cicd/ansiblelint.sh.j2)
 [![Ansible Galaxy](https://img.shields.io/ansible/role/GALAXY_ID)](https://galaxy.ansible.com/ansibleguy/ROLE)
 [![Ansible Galaxy Downloads](https://img.shields.io/badge/dynamic/json?color=blueviolet&label=Galaxy%20Downloads&query=%24.download_count&url=https%3A%2F%2Fgalaxy.ansible.com%2Fapi%2Fv1%2Froles%2FGALAXY_ID%2F%3Fformat%3Djson)](https://galaxy.ansible.com/ansibleguy/addons_nftables)
@@ -77,20 +78,40 @@ ansible-galaxy install ansibleguy.addons_nftables --roles-path ./roles
 
 ## Usage
 
-You can 
+You can manage the NFTables base-config using the [ansibleguy.infra_nftables](https://github.com/ansibleguy/infra_nftables) role!
 
 ### Config
 
 Define the config as needed:
 
 ```yaml
-app:
+nftables_addons:
+  enable:
+    dns: true  # enable DNS-addon
+    dns_v6: true  # enable IPv6-processing of DNS-addon
+    iplist: true  # enable IPList-addon
+    iplist_v6: true  # enable IPv6-processing of IPList-addon
+    # timer: true  # you could disable the timer-management if you want to do it yourself
+    # systemd: true  # update addons using a systemd-timer
+    # cron: false  # update addons using a cron-job
 
-```
+  path:
+    base_config: '/etc/nftables.conf'
+    addon:
+      dir: '/etc/nftables.d/addons'
 
-You might want to use 'ansible-vault' to encrypt your passwords:
-```bash
-ansible-vault encrypt_string
+  timer:
+    systemd:
+      dns: '*:0/15'  # update every 15min
+      iplist: '*-*-* 00,12:00:00'  # update twice a day
+
+    # cron:
+    #   dns:  # every 15min
+    #     minute: '*/15'
+    #   iplist:  # twice a day
+    #     minute: '0'
+    #     hour: '0,12'
+
 ```
 
 ### Execution
@@ -101,8 +122,8 @@ ansible-playbook -K -D -i inventory/hosts.yml playbook.yml
 ```
 
 There are also some useful **tags** available:
-* 
-*
+* dns
+* iplist
 
 To debug errors - you can set the 'debug' variable at runtime:
 ```bash

@@ -1,0 +1,4 @@
+---
+
+roles:
+  - src: 'ansibleguy.infra_nftables'
