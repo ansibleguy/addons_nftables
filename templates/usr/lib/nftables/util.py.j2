@@ -1,0 +1,89 @@
+#!/usr/bin/env python3
+
+# {{ ansible_managed }}
+
+from subprocess import Popen as subprocess_popen
+from subprocess import PIPE as subprocess_pipe
+from json import loads as json_loads
+from json import JSONDecodeError
+
+CMD_RELOAD = "{{ NTF_ADD_CONFIG.cmd_reload }}"
+CONFIG = "{{ NTF_ADD_CONFIG.path.base_config }}"
+
+{% raw %}
+FALLBACK_VAR_VALUE = {
+    4: '0.0.0.0',
+    6: '::/0',
+}
+FILE_TMP_PREFIX = '/tmp/nftables_'
+FILE_HEADER = '# Auto-Generated config - DO NOT EDIT MANUALLY!\n\n'
+
+
+def format_var(name: str, data: list, version: int, append: str = None) -> str:
+    if version not in FALLBACK_VAR_VALUE:
+        version = 4
+
+    if append not in [None, ' ', '']:
+        name = f'{name}_{append}'
+
+    raw = f"define { name } = {{ %s }}"
+
+    if len(data) == 0:
+        return raw % FALLBACK_VAR_VALUE[version]
+
+    return raw % ', '.join(map(str, data))
+
+
+def load_config(file: str, key: str = None) -> (dict, list, None):
+    with open(file, 'r', encoding='utf-8') as _cnf:
+        try:
+            if key is None:
+                return json_loads(_cnf.read())
+
+            else:
+                return json_loads(_cnf.read())[key]
+
+        except JSONDecodeError:
+            return None
+
+def _exec(cmd: (str, list)) -> int:
+    if isinstance(cmd, str):
+        cmd = cmd.split(' ')
+
+    p = subprocess_popen(cmd, stdout=subprocess_pipe)
+    _ = p.communicate()[0]
+    return p.returncode
+
+
+def _reload() -> bool:
+    return _exec(CMD_RELOAD) == 0
+
+
+def _validate(file: str) -> bool:
+    return _exec(['nft', '-cf', file]) == 0
+
+
+def _write(file: str, content: str):
+    with open(file, 'w', encoding='utf-8') as config:
+        config.write(content)
+
+
+def validate_and_write(key: str, lines: list, file: str):
+    file_tmp = f'{FILE_TMP_PREFIX}{key}.nft'
+    content = FILE_HEADER + '\n'.join(lines)
+
+    _write(file=file_tmp, content=content)
+
+    if _validate(file=file_tmp):
+        _write(file=file, content=content)
+
+        if _validate(file=CONFIG):
+            _reload()
+
+        else:
+            raise SystemExit(f"Failed to validate config: '{CONFIG}'!")
+
+    else:
+        raise SystemExit(f"Failed to validate test-config: '{file_tmp}'!")
+
+{% endraw %}

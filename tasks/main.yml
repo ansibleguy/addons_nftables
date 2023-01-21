@@ -1,0 +1,6 @@
+---
+
+- name: NFTables-Addons | Checking config
+  ansible.builtin.assert:
+    that:
+      - nftables_addons is defined
