@@ -1,5 +1,7 @@
 ---
 
+# NOTE: the containers DNS-resolution won't work after installing NFTables: https://github.com/nestybox/sysbox/issues/456#issuecomment-1015935133
+
 _references:
   docker:
     all: &docker_all
@@ -21,15 +23,21 @@ dependency:
 driver:
   name: docker
 platforms:
-  - name: test-ag-nftablesaddons-1
+  - name: test-ag-nftablesaddons-systemd
     docker_networks:
       - name: 'test-ag-nftablesaddons'
         ipam_config:
-          - subnet: '192.168.13.0/24'
-            gateway: '192.168.13.254'
+          - subnet: '192.168.14.0/24'
+            gateway: '192.168.14.254'
     networks:
       - name: 'test-ag-nftablesaddons'
-        ipv4_address: '192.168.13.1'
+        ipv4_address: '192.168.14.1'
+    <<: *docker_all
+
+  - name: test-ag-nftablesaddons-cron
+    networks:
+      - name: 'test-ag-nftablesaddons'
+        ipv4_address: '192.168.14.2'
     <<: *docker_all
 
 provisioner:
@@ -46,6 +54,7 @@ scenario:
     - destroy
     - syntax
     - create
+    - prepare
     - converge
     - verify  # MUST NOT make changes
     - idempotence

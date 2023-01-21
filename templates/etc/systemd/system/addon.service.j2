@@ -8,9 +8,9 @@ Requires=nftables.service
 
 [Service]
 Type=simple
-User={{ NTF_ADD_CONFIG.timer.systemd.user }}
-Group={{ NTF_ADD_CONFIG.timer.systemd.group }}
-ExecStart=python3 {{ NTF_ADD_CONFIG.path.lib }}/{{ addon_key }}.py
+User={{ NFT_ADD_CONFIG.user }}
+Group={{ NFT_ADD_CONFIG.group }}
+ExecStart=python3 {{ NFT_ADD_CONFIG.path.lib }}/{{ addon_key }}.py
 {% if ansible_distribution | lower == 'debian' and ansible_distribution_version == '10' %}
 StandardOutput=syslog
 StandardError=syslog
@@ -18,4 +18,4 @@ StandardError=syslog
 StandardOutput=journal
 StandardError=journal
 {% endif %}
-SyslogIdentifier={{ NTF_ADD_CONFIG.timer.systemd.syslog_id_prefix }}_{{ addon_key }}
+SyslogIdentifier={{ NFT_ADD_CONFIG.timer.systemd.syslog_id_prefix }}_{{ addon_key }}

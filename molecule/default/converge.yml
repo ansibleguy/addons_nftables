@@ -1,6 +1,59 @@
 ---
 
-- name: Converge
-  hosts: all
+- name: Converge with Systemd
+  hosts: test-ag-nftablesaddons-systemd
+  vars:
+    nftables_addons:
+      enable:
+        dns: true
+        dns_v6: true
+        iplist: true
+        iplist_v6: true
+        timer: true
+        systemd: true
+        cron: false
+
+      appendix:
+        ipv4: 'v4'
+        ipv6: 'v6'
+
+      config:
+        iplists:
+          tor_exit_nodes:
+            urls: ['https://check.torproject.org/torbulkexitlist']
+          spamhaus_edrop:
+            urls: 'https://www.spamhaus.org/drop/edrop.txt'
+            comment: ';'
+
+        dns_records:
+          site_github: ['github.com', 'codeload.github.com']
+          repo_debian: 'deb.debian.org'
+          ntp_pool: 'europe.pool.ntp.org'
+          site_ansibleguy: 'ansibleguy.net'
+
+  roles:
+    - ansibleguy.addons_nftables
+
+- name: Converge with Cron
+  hosts: test-ag-nftablesaddons-cron
+  vars:
+    nftables_addons:
+      enable:
+        dns: true
+        dns_v6: false
+        iplist: true
+        iplist_v6: false
+        timer: true
+        systemd: false
+        cron: true
+
+      config:
+        iplists:
+          tor_exit_nodes:
+            urls: 'https://check.torproject.org/torbulkexitlist'
+
+        dns_records:
+          site_ansibleguy: 'ansibleguy.net'
+
   roles:
     - ansibleguy.addons_nftables

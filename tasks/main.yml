@@ -32,7 +32,7 @@
   ansible.builtin.file:
     state: directory
     owner: 'root'
-    group: 'root'
+    group: "{{ NFT_ADD_CONFIG.group }}"
     mode: 0750
     path: "{{ item }}"
   loop:
@@ -41,11 +41,18 @@
 
 - name: NFTables-Addons | Copying util-script
   ansible.builtin.template:
-    src: 'templates/usr/lib/nftables/util.py'
-    dest: "{{ NTF_ADD_CONFIG.path.lib }}/util.py"
+    src: 'templates/usr/lib/nftables/util.py.j2'
+    dest: "{{ NFT_ADD_CONFIG.path.lib }}/util.py"
     owner: 'root'
-    group: 'root'
+    group: "{{ NFT_ADD_CONFIG.group }}"
     mode: 0750
+
+- name: NFTables-Addons | Adding Include
+  ansible.builtin.blockinfile:
+    path: "{{ NFT_ADD_CONFIG.path.base_config }}"
+    marker: '# {mark} ANSIBLE MANAGED BLOCK ansibleguy.addons_nftables'
+    block: "include \"{{ NFT_ADD_CONFIG.path.addon.dir }}/*.nft\""
+  when: NFT_ADD_CONFIG.enable.include
 
 - name: NFTables-Addons | DNS Addon
   ansible.builtin.import_tasks: dns.yml

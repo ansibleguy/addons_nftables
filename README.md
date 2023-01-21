@@ -6,8 +6,6 @@
 
 Role to deploy Addons for NFTables on Linux servers.
 
-# REPLACE: GALAXY_ID & ROLE
-
 [![Molecule Test Status](https://badges.ansibleguy.net/addons_nftables.molecule.svg)](https://github.com/ansibleguy/_meta_cicd/blob/latest/templates/usr/local/bin/cicd/molecule.sh.j2)
 [![YamlLint Test Status](https://badges.ansibleguy.net/addons_nftables.yamllint.svg)](https://github.com/ansibleguy/_meta_cicd/blob/latest/templates/usr/local/bin/cicd/yamllint.sh.j2)
 [![PyLint Test Status](https://badges.ansibleguy.net/addons_nftables.pylint.svg)](https://github.com/ansibleguy/_meta_cicd/blob/latest/templates/usr/local/bin/cicd/pylint.sh.j2)
@@ -28,15 +26,16 @@ ansible-galaxy install ansibleguy.addons_nftables
 ansible-galaxy install ansibleguy.addons_nftables --roles-path ./roles
 ```
 
+## Documentation
+
+* NFTables: [Wiki](https://wiki.nftables.org/wiki-nftables/index.php/Quick_reference-nftables_in_10_minutes)
+* Check out the [Example](https://github.com/ansibleguy/addons_nftables/blob/main/Example.md)!
+* Ansible-manage all of NFTables: [ansibleguy.infra_nftables](https://github.com/ansibleguy/infra_nftables/blob/main/README.md)
+
+
 ## Functionality
 
-* **Package installation**
-  * 
-
-
 * **Configuration**
-  * 
-
 
   * **Default config**:
     * Systemd Timer to run the addons
@@ -53,6 +52,7 @@ ansible-galaxy install ansibleguy.addons_nftables --roles-path ./roles
   * **Default opt-ins**:
     * Timer to automatically update variables
     * Systemd Timer
+    * Adding include into '/etc/nftables.conf'
 
 
   * **Default opt-outs**:
@@ -76,6 +76,11 @@ ansible-galaxy install ansibleguy.addons_nftables --roles-path ./roles
 * **Warning:** Not every setting/variable you provide will be checked for validity. Bad config might break the role!
 
 
+* **Note:** **Every defined variable will be created** as a missing one might break your config!
+
+  If a DNS-record cannot be resolved or no entry is returned - a fallback value (_IPv4: 0.0.0.0, IPv6: ::/0_) will be set.
+
+
 ## Usage
 
 You can manage the NFTables base-config using the [ansibleguy.infra_nftables](https://github.com/ansibleguy/infra_nftables) role!
@@ -94,6 +99,7 @@ nftables_addons:
     # timer: true  # you could disable the timer-management if you want to do it yourself
     # systemd: true  # update addons using a systemd-timer
     # cron: false  # update addons using a cron-job
+    # include: true  # disable auto-include of addons in /etc/nftables.conf
 
   path:
     base_config: '/etc/nftables.conf'
@@ -124,6 +130,7 @@ ansible-playbook -K -D -i inventory/hosts.yml playbook.yml
 There are also some useful **tags** available:
 * dns
 * iplist
+* config (_only update addon-config_)
 
 To debug errors - you can set the 'debug' variable at runtime:
 ```bash

@@ -1,10 +1,10 @@
 ---
 
-- name: "NFTables-Addons | Timer Cron | {{ addon_key }} | Adding entry"
+- name: "NFTables-Addons | Timer | Cron | {{ addon_key }} | Adding entry"
   ansible.builtin.cron:
     name: "{{ NFT_ADD_HC.cron_prefix }}_{{ addon_key }}"
-    minute: "{{ NTF_ADD_CONFIG.timer.cron[addon_key]['minute'] | default(omit, true) }}"
-    hour: "{{ NTF_ADD_CONFIG.timer.cron[addon_key]['hour'] | default(omit, true) }}"
-    day: "{{ NTF_ADD_CONFIG.timer.cron[addon_key]['day'] | default(omit, true) }}"
-    weekday: "{{ NTF_ADD_CONFIG.timer.cron[addon_key]['weekday'] | default(omit, true) }}"
-    job: "python3 {{ NTF_ADD_CONFIG.path.lib }}/{{ addon_key }}.py"
+    minute: "{{ NFT_ADD_CONFIG.timer.cron[addon_key]['minute'] | default(omit, true) }}"
+    hour: "{{ NFT_ADD_CONFIG.timer.cron[addon_key]['hour'] | default(omit, true) }}"
+    day: "{{ NFT_ADD_CONFIG.timer.cron[addon_key]['day'] | default(omit, true) }}"
+    weekday: "{{ NFT_ADD_CONFIG.timer.cron[addon_key]['weekday'] | default(omit, true) }}"
+    job: "python3 {{ NFT_ADD_CONFIG.path.lib }}/{{ addon_key }}.py"

@@ -13,6 +13,7 @@ defaults_nftables_addons:
     timer: true
     systemd: true
     cron: false
+    include: true
 
   appendix:  # will be appended to the var-names
     ipv4: ''
@@ -23,6 +24,7 @@ defaults_nftables_addons:
     #  variable:
     #    urls: ['https://check.torproject.org/torbulkexitlist']
     #    separator: "\n"
+    #    comment: '#'
     dns_records: {}
     #  variable: ['dns1', 'dns2']
 
@@ -38,6 +40,9 @@ defaults_nftables_addons:
 
   cmd_reload: 'sudo systemctl restart nftables.service'  # if no systemd is available: use 'sudo nft -f { base_config }'
 
+  user: 'root'
+  group: 'root'
+
   timer:
     systemd:
       # for date-time format see:
@@ -45,8 +50,6 @@ defaults_nftables_addons:
       #   https://silentlad.com/systemd-timers-oncalendar-(cron)-format-explained
       dns: '*:0/15'  # every 15min
       iplist: '*-*-* 00,12:00:00'  # twice a day
-      user: 'root'
-      group: 'root'
       syslog_id_prefix: 'nftables_addon'
       service_prefix: 'ansibleguy.addons_nftables-'
 
@@ -62,4 +65,4 @@ defaults_nftables_addons:
         day:
         weekday:
 
-NTF_ADD_CONFIG: "{{ defaults_nftables_addons | combine(nftables_addons, recursive=true) }}"
+NFT_ADD_CONFIG: "{{ defaults_nftables_addons | combine(nftables_addons, recursive=true) }}"

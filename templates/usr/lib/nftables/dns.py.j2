@@ -5,12 +5,13 @@
 from dns_resolver import resolve_ipv4, resolve_ipv6
 from util import validate_and_write, load_config, format_var
 
-PROCESS_IPv6 = {% if NTF_ADD_CONFIG.enable.dns_v6 %}True{% else %}False{% endif %}
-APPENDIX_4 = '{{ NTF_ADD_CONFIG.appendix.ipv4 }}'
-APPENDIX_6 = '{{ NTF_ADD_CONFIG.appendix.ipv6 }}'
-DUMP_FILE = '{{ NTF_ADD_CONFIG.path.addon.dir }}/{{ NTF_ADD_CONFIG.path.addon.dns_dump }}'
+PROCESS_IPv6 = {% if NFT_ADD_CONFIG.enable.dns_v6 %}True{% else %}False{% endif %}
+
+APPENDIX_4 = '{{ NFT_ADD_CONFIG.appendix.ipv4 }}'
+APPENDIX_6 = '{{ NFT_ADD_CONFIG.appendix.ipv6 }}'
+DUMP_FILE = '{{ NFT_ADD_CONFIG.path.addon.dir }}/{{ NFT_ADD_CONFIG.path.addon.dns_dump }}'
 DUMP_FILE_KEY = '{{ NFT_ADD_HC.dump_keys.dns }}'
-OUT_FILE = '{{ NTF_ADD_CONFIG.path.addon.dir }}/{{ NTF_ADD_CONFIG.path.addon.dns }}'
+OUT_FILE = '{{ NFT_ADD_CONFIG.path.addon.dir }}/{{ NFT_ADD_CONFIG.path.addon.dns }}'
 
 {% raw %}
 

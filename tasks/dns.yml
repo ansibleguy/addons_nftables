@@ -3,18 +3,36 @@
 - name: NFTables-Addons | DNS | Copying helper-script
   ansible.builtin.copy:
     src: 'files/usr/lib/nftables/dns_resolver.py'
-    dest: "{{ NTF_ADD_CONFIG.path.lib }}/dns_resolver.py"
+    dest: "{{ NFT_ADD_CONFIG.path.lib }}/dns_resolver.py"
     owner: 'root'
-    group: 'root'
+    group: "{{ NFT_ADD_CONFIG.group }}"
     mode: 0750
 
 - name: NFTables-Addons | DNS | Copying script
   ansible.builtin.template:
-    src: 'templates/usr/lib/nftables/dns.py'
-    dest: "{{ NTF_ADD_CONFIG.path.lib }}/dns.py"
+    src: 'templates/usr/lib/nftables/dns.py.j2'
+    dest: "{{ NFT_ADD_CONFIG.path.lib }}/dns.py"
     owner: 'root'
-    group: 'root'
+    group: "{{ NFT_ADD_CONFIG.group }}"
     mode: 0750
+
+- name: NFTables-Addons | DNS | Adding config
+  ansible.builtin.copy:
+    content: "{{ data | to_json }}"
+    dest: "{{ NFT_ADD_CONFIG.path.addon.dir }}/{{ NFT_ADD_CONFIG.path.addon.dns_dump }}"
+    owner: 'root'
+    group: "{{ NFT_ADD_CONFIG.group }}"
+    mode: 0640
+  vars:
+    data: "{{ { NFT_ADD_HC.dump_keys.dns : NFT_ADD_CONFIG.config.dns_records } }}"
+  register: nft_dns_config
+  tags: config
+
+- name: NFTables-Addons | DNS | Updating config
+  ansible.builtin.command: "python3 {{ NFT_ADD_CONFIG.path.lib }}/dns.py"
+  timeout: 5
+  when: nft_dns_config.changed
+  tags: config
 
 - name: NFTables-Addons | DNS | Timer
   ansible.builtin.include_tasks: timer/main.yml

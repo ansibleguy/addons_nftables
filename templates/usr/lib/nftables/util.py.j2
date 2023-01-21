@@ -7,8 +7,8 @@ from subprocess import PIPE as subprocess_pipe
 from json import loads as json_loads
 from json import JSONDecodeError
 
-CMD_RELOAD = '{{ NTF_ADD_CONFIG.cmd_reload }}'
-CONFIG = '{{ NTF_ADD_CONFIG.path.base_config }}'
+CMD_RELOAD = '{{ NFT_ADD_CONFIG.cmd_reload }}'
+CONFIG = '{{ NFT_ADD_CONFIG.path.base_config }}'
 
 {% raw %}
 FALLBACK_VAR_VALUE = {
@@ -65,7 +65,7 @@ def _validate(file: str) -> bool:
 
 def _write(file: str, content: str):
     with open(file, 'w', encoding='utf-8') as config:
-        config.write(content)
+        config.write(content + '\n\n')
 
 
 def validate_and_write(key: str, lines: list, file: str):

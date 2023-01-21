@@ -1,6 +1,14 @@
 ---
 
 - name: Prepare
+  hosts: test-ag-nftablesaddons-cron
+  tasks:
+    - name: Installing Role dependencies
+      ansible.builtin.apt:
+        name: ['cron']
+        state: present
+
+- name: Prepare
   hosts: all
   vars:
     nftables:
@@ -16,16 +24,37 @@
 
               hook: 'input'
               rules:
-                - sequence: 1
-                  raw: 'ct state invalid counter log prefix "DROP invalid sates" drop'
-                - seq: 2
-                  raw: 'ct state {established, related} counter accept comment "Allow open sessions"'
-                - s: 3
-                  raw: 'iifname "lo" accept comment "Allow loopback traffic"'
+                - 'ct state invalid counter log prefix "DROP invalid sates" drop'
+                - 'ct state {established, related} counter accept comment "Allow open sessions"'
+                - 'iifname "lo" accept comment "Allow loopback traffic"'
 
             outgoing:
               hook: 'output'
               policy: 'accept'
+
+            route:
+              hook: 'forward'
+              policy: 'accept'
+
+            prr:
+              hook: 'prerouting'
+              policy: 'accept'
+
+            por:
+              hook: 'postrouting'
+              type: 'nat'
+              policy: 'accept'
+
+  pre_tasks:
+    - name: Installing troubleshooting utils
+      ansible.builtin.apt:
+        name: ['less', 'nano', 'net-tools', 'dnsutils', 'iproute2']
+        state: present
+
+    - name: Installing Role dependencies
+      ansible.builtin.apt:
+        name: ['kmod']
+        state: present
 
   roles:
     - ansibleguy.infra_nftables

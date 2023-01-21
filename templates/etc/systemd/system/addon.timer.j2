@@ -5,7 +5,7 @@
 Description=Timer to process NFTables Add-On '{{ addon_key }}'
 
 [Timer]
-OnCalendar={{ NTF_ADD_CONFIG.timer.systemd[addon_key] }}
+OnCalendar={{ NFT_ADD_CONFIG.timer.systemd[addon_key] }}
 Persistent=false
 WakeSystem=false
 

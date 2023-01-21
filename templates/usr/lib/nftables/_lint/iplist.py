@@ -44,9 +44,14 @@ def _filter_result_protocol(protocol: int, results: list) -> list:
     return filtered
 
 
-def _download_list(url: str, sep: str) -> list:
+def _download_list(url: str, sep: str, cmt: str) -> list:
+    cleaned = []
+
     with request.urlopen(url) as u:
-        return u.read().decode('utf-8').split(sep)
+        for r in u.read().decode('utf-8').split(sep):
+            cleaned.append(r.split(cmt, 1)[0].strip())
+
+    return cleaned
 
 
 CONFIG = load_config(file=DUMP_FILE, key=DUMP_FILE_KEY)
@@ -56,8 +61,16 @@ if CONFIG is None or len(CONFIG) == 0:
 
 lines = []
 for var, iplist_config in CONFIG.items():
+    if 'urls' not in iplist_config:
+        print(
+            "You need to provide the 'urls' parameter! "
+            f"Ignoring variable: '{var}'"
+        )
+        continue
+
     urls = iplist_config['urls']
     separator = iplist_config['separator'] if 'separator' in iplist_config else '\n'
+    comment = iplist_config['comment'] if 'comment' in iplist_config else '#'
 
     if not isinstance(urls, list):
         urls = [urls]
@@ -66,7 +79,7 @@ for var, iplist_config in CONFIG.items():
     values_v6 = []
 
     for entry in urls:
-        data = _download_list(url=entry, sep=separator)
+        data = _download_list(url=entry, sep=separator, cmt=comment)
 
         lines.append(
             format_var(

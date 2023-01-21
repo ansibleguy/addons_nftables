@@ -64,7 +64,7 @@ def _validate(file: str) -> bool:
 
 def _write(file: str, content: str):
     with open(file, 'w', encoding='utf-8') as config:
-        config.write(content)
+        config.write(content + '\n')
 
 
 def validate_and_write(key: str, lines: list, file: str):
