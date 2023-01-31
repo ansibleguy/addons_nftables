@@ -29,7 +29,7 @@ ansible-galaxy install ansibleguy.addons_nftables --roles-path ./roles
 ## Documentation
 
 * NFTables: [Wiki](https://wiki.nftables.org/wiki-nftables/index.php/Quick_reference-nftables_in_10_minutes)
-* Check out the [Example](https://github.com/ansibleguy/addons_nftables/blob/main/Example.md)!
+* Check out the [Example](https://github.com/ansibleguy/addons_nftables/blob/stable/Example.md)!
 * Ansible-manage all of NFTables: [ansibleguy.infra_nftables](https://github.com/ansibleguy/infra_nftables/blob/main/README.md)
 
 
