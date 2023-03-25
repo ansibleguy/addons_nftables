@@ -18,8 +18,8 @@ OUT_FILE = '/etc/nftables.d/addons/iplist.nft'
 def _filter_result_protocol(protocol: int, results: list) -> list:
     filtered = []
     protocols = {
-        4: dict(network=IPv4Network, address=IPv4Address),
-        6: dict(network=IPv6Network, address=IPv6Address),
+        4: {'network': IPv4Network, 'address': IPv4Address},
+        6: {'network': IPv6Network, 'address': IPv6Address},
     }
 
     if protocol not in protocols:

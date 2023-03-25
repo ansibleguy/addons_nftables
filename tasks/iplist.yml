@@ -16,12 +16,13 @@
     group: "{{ NFT_ADD_CONFIG.group }}"
     mode: 0640
   vars:
-    data: "{{ { NFT_ADD_HC.dump_keys.iplist : NFT_ADD_CONFIG.config.iplists } }}"
+    data: "{{ {NFT_ADD_HC.dump_keys.iplist: NFT_ADD_CONFIG.config.iplists} }}"
   register: nft_iplist_config
   tags: config
 
 - name: NFTables-Addons | IP-List | Updating config
   ansible.builtin.command: "python3 {{ NFT_ADD_CONFIG.path.lib }}/iplist.py"
+  changed_when: false
   timeout: 5
   when: nft_iplist_config.changed
   tags: config

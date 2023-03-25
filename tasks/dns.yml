@@ -24,12 +24,13 @@
     group: "{{ NFT_ADD_CONFIG.group }}"
     mode: 0640
   vars:
-    data: "{{ { NFT_ADD_HC.dump_keys.dns : NFT_ADD_CONFIG.config.dns_records } }}"
+    data: "{{ {NFT_ADD_HC.dump_keys.dns: NFT_ADD_CONFIG.config.dns_records} }}"
   register: nft_dns_config
   tags: config
 
 - name: NFTables-Addons | DNS | Updating config
   ansible.builtin.command: "python3 {{ NFT_ADD_CONFIG.path.lib }}/dns.py"
+  changed_when: false
   timeout: 5
   when: nft_dns_config.changed
   tags: config
