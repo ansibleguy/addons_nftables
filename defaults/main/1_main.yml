@@ -64,5 +64,3 @@ defaults_nftables_addons:
         hour: '0,12'
         day:
         weekday:
-
-NFT_ADD_CONFIG: "{{ defaults_nftables_addons | combine(nftables_addons, recursive=true) }}"
