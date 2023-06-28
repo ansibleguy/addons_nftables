@@ -17,7 +17,7 @@ defaults_nftables_addons:
 
   appendix:  # will be appended to the var-names
     ipv4: ''
-    ipv6: 'v6'
+    ipv6: 'v6'  # IMPORTANT: NEEDS TO DIFFER FROM v4 VARS! As NFTables can only use one IP-protocol at a time
 
   config:
     iplists: {}
@@ -33,12 +33,12 @@ defaults_nftables_addons:
     base_config: '/etc/nftables.conf'
     addon:
       dir: '/etc/nftables.d/addons'
-      dns: 'dns.nft'
+      dns: 'dns'  # .nft will be appended
       dns_dump: 'dns.json'
-      iplist: 'iplist.nft'
+      iplist: 'iplist'  # .nft will be appended
       iplist_dump: 'iplist.json'
 
-  cmd_reload: 'sudo systemctl restart nftables.service'  # if no systemd is available: use 'sudo nft -f { base_config }'
+  cmd_reload: 'sudo systemctl reload nftables.service'  # if no systemd is available: use 'sudo nft -f { base_config }'
 
   user: 'root'
   group: 'root'
