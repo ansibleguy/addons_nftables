@@ -55,6 +55,7 @@ def _exec(cmd: (str, list)) -> int:
 
 
 def _reload() -> bool:
+    print('INFO: Reloading NFTables!')
     return _exec(CMD_RELOAD) == 0
 
 
@@ -64,23 +65,67 @@ def _validate(file: str) -> bool:
 
 def _write(file: str, content: str):
     with open(file, 'w', encoding='utf-8') as config:
-        config.write(content + '\n')
+        config.write(content + '\n\n')
+
+
+def _file_hash(file: str) -> str:
+    if Path(file).exists():
+        with open(file, 'rb') as _c:
+            return md5_hash(_c.read()).hexdigest()
+
+    else:
+        return md5_hash(b'').hexdigest()
 
 
 def validate_and_write(key: str, lines: list, file: str):
-    file_tmp = f'{FILE_TMP_PREFIX}{key}.nft'
-    content = FILE_HEADER + '\n'.join(lines)
+    file_out = f'{file}.nft'
+    file_out_path = f'{ADDON_DIR}/{file}'
+    file_tmp = f'{FILE_TMP_PREFIX}{key}_{time()}.nft'
+    file_tmp_main = f'{FILE_TMP_PREFIX}main_{time()}.nft'
+    content = FILE_HEADER + '\n'.join(lines) + '\n'
 
     _write(file=file_tmp, content=content)
 
-    if _validate(file=file_tmp):
-        _write(file=file, content=content)
+    config_hash = dict(
+        before=_file_hash(file=file_out),
+        after=_file_hash(file=file_tmp),
+    )
+    config_changed = config_hash['before'] != config_hash['after']
 
-        if _validate(file=CONFIG):
-            _reload()
+    if config_changed:
+        # create config to include existing main-config; must be valid in combination with new one
+        addon_includes = ''
+
+        for inc in listdir(ADDON_DIR):
+            if inc.endswith('.nft') and inc != file_out:
+                addon_includes += f'include "{inc}"\n'
+
+        _write(
+            file=file_tmp_main,
+            content=f'include "{file_tmp}"\n'
+                    f'{addon_includes}'
+                    'include "/etc/nftables/*.nft"\n'
+            # NOTE: could be a problem if other file-endings are used..
+        )
+
+        if _validate(file=file_tmp_main):
+            print('INFO: Test-config validated successfully!')
+            _write(file=file_out_path, content=content)
+
+            if _validate(file=CONFIG):
+                print('INFO: Real-config validated successfully!')
+                _reload()
+
+            else:
+                raise SystemExit('ERROR: Failed to validate real-config!')
 
         else:
-            raise SystemExit(f"Failed to validate config: '{CONFIG}'!")
+            raise SystemExit('WARN: Failed to validate test-config!')
+
+        _exec(['rm', file_tmp_main])
 
     else:
-        raise SystemExit(f"Failed to validate test-config: '{file_tmp}'!")
+        print('INFO: Config unchanged - nothing to do.')
+
+    _exec(['rm', file_tmp])
+

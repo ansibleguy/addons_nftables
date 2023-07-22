@@ -101,6 +101,16 @@ nftables_addons:
     # cron: false  # update addons using a cron-job
     # include: true  # disable auto-include of addons in /etc/nftables.conf
 
+  config:
+    iplists:
+      iplist_tor_exit_nodes:  # var-name
+        urls: ['https://check.torproject.org/torbulkexitlist']
+        separator: "\n"
+        comment: '#'
+    dns_records:
+      ntp_servers: ['0.europe.pool.ntp.org', '1.europe.pool.ntp.org']
+      repo_debian: ['deb.debian.org', 'debian.map.fastlydns.net', 'security.debian.org']
+
   path:
     base_config: '/etc/nftables.conf'
     addon:
