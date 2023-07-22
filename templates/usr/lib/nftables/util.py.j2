@@ -103,7 +103,7 @@ def validate_and_write(key: str, lines: list, file: str):
         addon_includes = ''
 
         for inc in listdir(ADDON_DIR):
-            if inc != file_out:
+            if inc.endswith('.nft') and inc != file_out:
                 addon_includes += f'include "{inc}"\n'
 
         _write(
