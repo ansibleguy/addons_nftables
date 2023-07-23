@@ -6,4 +6,4 @@ class FilterModule(object):
 
     @staticmethod
     def path_to_regex(data: str) -> str:
-        return data.replace('/', '\/').replace('*','\*').replace('.', '\.')
+        return data.replace('/', r'\/').replace('*', r'\*').replace('.', r'\.')
