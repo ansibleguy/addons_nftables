@@ -231,21 +231,21 @@ guy@ansible:~# cat /etc/nftables.d/addons/iplist.nft
 > # Auto-Generated config - DO NOT EDIT MANUALLY!
 > 
 > define tor_exit_nodes_v4 = { 102.130.113.9, 102.130.127.117, 102.130.127.238, ..., 95.216.107.148, 95.217.186.208 }
-> define tor_exit_nodes_v6 = { ::/0 }
+> define tor_exit_nodes_v6 = { :: }
 > define spamhaus_edrop_v4 = { 109.206.243.0/24, 119.227.224.0/19, 120.128.128.0/17, ..., 95.161.128.0/24, 95.214.24.0/24 }
-> define spamhaus_edrop_v6 = { ::/0 }
+> define spamhaus_edrop_v6 = { :: }
 
 guy@ansible:~# cat /etc/nftables.d/addons/dns.nft    
 > # Auto-Generated config - DO NOT EDIT MANUALLY!
 > 
 > define site_github_v4 = { 140.82.121.3, 140.82.121.10 }
-> define site_github_v6 = { ::/0 }
+> define site_github_v6 = { :: }
 > define repo_debian_v4 = { 151.101.86.132 }
 > define repo_debian_v6 = { 2a04:4e42:14::644 }
 > define ntp_pool_v4 = { 158.43.128.33, 178.62.250.107, 194.58.207.20, 37.252.127.156 }
-> define ntp_pool_v6 = { ::/0 }
+> define ntp_pool_v6 = { :: }
 > define site_ansibleguy_v4 = { 135.181.170.217 }
-> define site_ansibleguy_v6 = { ::/0 }
+> define site_ansibleguy_v6 = { :: }
 ```
 
 #### SRV02

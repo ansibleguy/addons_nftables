@@ -17,7 +17,7 @@ ADDON_DIR = '/etc/nftables.d/addons'
 
 FALLBACK_VAR_VALUE = {
     4: '0.0.0.0',
-    6: '::/0',
+    6: '::',
 }
 FILE_TMP_PREFIX = '/tmp/nftables_'
 FILE_HEADER = '# Auto-Generated config - DO NOT EDIT MANUALLY!\n\n'

@@ -78,7 +78,7 @@ ansible-galaxy install ansibleguy.addons_nftables --roles-path ./roles
 
 * **Note:** **Every defined variable will be created** as a missing one might break your config!
 
-  If a DNS-record cannot be resolved or no entry is returned - a fallback value (_IPv4: 0.0.0.0, IPv6: ::/0_) will be set.
+  If a DNS-record cannot be resolved or no entry is returned - a fallback value (_IPv4: 0.0.0.0, IPv6: ::_) will be set.
 
 
 ## Usage
