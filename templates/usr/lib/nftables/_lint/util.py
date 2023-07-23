@@ -72,6 +72,8 @@ def _write(file: str, content: str):
     with open(file, 'w', encoding='utf-8') as config:
         config.write(content + '\n\n')
 
+    _exec(['chmod', '640', file])
+
 
 def _file_hash(file: str) -> str:
     if Path(file).exists():
@@ -84,7 +86,7 @@ def _file_hash(file: str) -> str:
 
 def validate_and_write(key: str, lines: list, file: str):
     file_out = f'{file}.nft'
-    file_out_path = f'{ADDON_DIR}/{file}'
+    file_out_path = f'{ADDON_DIR}/{file_out}'
     file_tmp = f'{FILE_TMP_PREFIX}{key}_{time()}.nft'
     file_tmp_main = f'{FILE_TMP_PREFIX}main_{time()}.nft'
     content = FILE_HEADER + '\n'.join(lines) + '\n'
@@ -92,7 +94,7 @@ def validate_and_write(key: str, lines: list, file: str):
     _write(file=file_tmp, content=content)
 
     config_hash = {
-        'before': _file_hash(file=file_out),
+        'before': _file_hash(file=file_out_path),
         'after': _file_hash(file=file_tmp),
     }
     config_changed = config_hash['before'] != config_hash['after']
