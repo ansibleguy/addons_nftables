@@ -2,6 +2,10 @@
 
 # {{ ansible_managed }}
 
+from os import listdir
+from time import time
+from pathlib import Path
+from hashlib import md5 as md5_hash
 from subprocess import Popen as subprocess_popen
 from subprocess import PIPE as subprocess_pipe
 from json import loads as json_loads
@@ -9,6 +13,7 @@ from json import JSONDecodeError
 
 CMD_RELOAD = 'sudo systemctl restart nftables.service'
 CONFIG = '/etc/nftables.conf'
+ADDON_DIR = '/etc/nftables.d/addons'
 
 FALLBACK_VAR_VALUE = {
     4: '0.0.0.0',
@@ -86,10 +91,10 @@ def validate_and_write(key: str, lines: list, file: str):
 
     _write(file=file_tmp, content=content)
 
-    config_hash = dict(
-        before=_file_hash(file=file_out),
-        after=_file_hash(file=file_tmp),
-    )
+    config_hash = {
+        'before': _file_hash(file=file_out),
+        'after': _file_hash(file=file_tmp),
+    }
     config_changed = config_hash['before'] != config_hash['after']
 
     if config_changed:
@@ -128,4 +133,3 @@ def validate_and_write(key: str, lines: list, file: str):
         print('INFO: Config unchanged - nothing to do.')
 
     _exec(['rm', file_tmp])
-

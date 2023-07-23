@@ -92,10 +92,10 @@ def validate_and_write(key: str, lines: list, file: str):
 
     _write(file=file_tmp, content=content)
 
-    config_hash = dict(
-        before=_file_hash(file=file_out),
-        after=_file_hash(file=file_tmp),
-    )
+    config_hash = {
+        'before': _file_hash(file=file_out),
+        'after': _file_hash(file=file_tmp),
+    }
     config_changed = config_hash['before'] != config_hash['after']
 
     if config_changed:
