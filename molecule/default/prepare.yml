@@ -1,51 +1,27 @@
 ---
 
-- name: Prepare
+- name: Prepare Cron-Based Timer
   hosts: test-ag-nftablesaddons-cron
+  gather_facts: false
   tasks:
     - name: Installing Role dependencies
       ansible.builtin.apt:
         name: ['cron']
         state: present
 
+- name: Prepare Systemd-Based Timer
+  hosts: test-ag-nftablesaddons-systemd
+  gather_facts: false
+  tasks:
+    - name: Installing Role dependencies
+      ansible.builtin.apt:
+        name: ['systemd']
+        state: present
+
 - name: Prepare
   hosts: all
-  vars:
-    nftables:
-      enable:
-        sets: false  # debian (11) kernel 5.x does not support it
-
-      tables:
-        example:
-          chains:
-            incoming:
-              vars:
-                chain_var: '1.1.1.1'
-
-              hook: 'input'
-              rules:
-                - 'ct state invalid counter log prefix "DROP invalid sates" drop'
-                - 'ct state {established, related} counter accept comment "Allow open sessions"'
-                - 'iifname "lo" accept comment "Allow loopback traffic"'
-
-            outgoing:
-              hook: 'output'
-              policy: 'accept'
-
-            route:
-              hook: 'forward'
-              policy: 'accept'
-
-            prr:
-              hook: 'prerouting'
-              policy: 'accept'
-
-            por:
-              hook: 'postrouting'
-              type: 'nat'
-              policy: 'accept'
-
-  pre_tasks:
+  gather_facts: false
+  tasks:
     - name: Installing troubleshooting utils
       ansible.builtin.apt:
         name: ['less', 'nano', 'net-tools', 'dnsutils', 'iproute2']
@@ -53,8 +29,19 @@
 
     - name: Installing Role dependencies
       ansible.builtin.apt:
-        name: ['kmod']
+        name: ['kmod', 'nftables']
         state: present
 
-  roles:
-    - ansibleguy.infra_nftables
+    - name: Starting & Enabling NFTables
+      ansible.builtin.systemd:
+        name: 'nftables.service'
+        state: started
+        enabled: true
+
+    - name: NFTables | Adding config directory
+      ansible.builtin.file:
+        state: directory
+        path: '/etc/nftables.d'
+        mode: 0750
+        owner: 'root'
+        group: 'root'

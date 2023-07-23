@@ -7,7 +7,7 @@ from ipaddress import IPv4Network, IPv6Network, IPv4Address, IPv6Address, Addres
 
 from util import validate_and_write, load_config, format_var
 
-PROCESS_IPv6 = {% if NFT_ADD_CONFIG.enable.iplist_v6 %}True{% else %}False{% endif %}
+PROCESS_IPv6 = {% if NFT_ADD_CONFIG.enable.iplist_v6 | bool %}True{% else %}False{% endif %}
 
 APPENDIX_4 = '{{ NFT_ADD_CONFIG.appendix.ipv4 }}'
 APPENDIX_6 = '{{ NFT_ADD_CONFIG.appendix.ipv6 }}'

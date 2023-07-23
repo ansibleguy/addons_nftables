@@ -5,6 +5,7 @@
     that:
       - nftables_addons is defined
       - NFT_ADD_CONFIG.enable.dns | bool or NFT_ADD_CONFIG.enable.iplist | bool
+      - not NFT_ADD_CONFIG.ext.startswith('.')
   tags: always
 
 - name: "NFTables-Addons | Checking Python3 version (must be >= {{ NFT_ADD_HC.min_py3_version }})"
@@ -49,10 +50,11 @@
 
 - name: NFTables-Addons | Adding Include
   ansible.builtin.blockinfile:
-    path: "{{ NFT_ADD_CONFIG.path.base_config }}"
+    path: "{{ NFT_ADD_CONFIG.path.base.config }}"
     marker: '# {mark} ANSIBLE MANAGED BLOCK ansibleguy.addons_nftables'
-    block: "include \"{{ NFT_ADD_CONFIG.path.addon.dir }}/*.nft\""
-  when: NFT_ADD_CONFIG.enable.include
+    block: "include \"{{ NFT_ADD_CONFIG.path.addon.dir }}/*.{{ NFT_ADD_CONFIG.ext }}\""
+    insertbefore: "include \"{{ NFT_ADD_CONFIG.path.base.dir | path_to_regex }}"
+  when: NFT_ADD_CONFIG.enable.include | bool
 
 - name: NFTables-Addons | DNS Addon
   ansible.builtin.import_tasks: dns.yml

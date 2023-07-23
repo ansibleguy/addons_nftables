@@ -3,6 +3,8 @@
 no_prompts: false
 debug: false
 
+NFT_CONFIG: {}  # fallback if undefined
+
 # default config => is overwritten by provided config
 defaults_nftables_addons:
   enable:
@@ -28,17 +30,20 @@ defaults_nftables_addons:
     dns_records: {}
     #  variable: ['dns1', 'dns2']
 
+  ext: "{{ NFT_CONFIG.ext | default('nft') }}"  # extensions used for nftables config-files
   path:
     lib: '/usr/lib/nftables'
-    base_config: '/etc/nftables.conf'
+    base:
+      config: "{{ NFT_CONFIG.path.config_file | default('/etc/nftables.conf') }}"
+      dir: "{{ NFT_CONFIG.path.config_dir | default('/etc/nftables.d') }}"  # set to empty string if not used
     addon:
-      dir: '/etc/nftables.d/addons'
+      dir: "{{ NFT_CONFIG.path.config_dir | default('/etc/nftables.d') + '/addons' }}"
       dns: 'dns'  # .nft will be appended
       dns_dump: 'dns.json'
       iplist: 'iplist'  # .nft will be appended
       iplist_dump: 'iplist.json'
 
-  cmd_reload: 'sudo systemctl reload nftables.service'  # if no systemd is available: use 'sudo nft -f { base_config }'
+  cmd_reload: 'sudo systemctl reload nftables.service'  # has to be changed if no systemd is available
 
   user: 'root'
   group: 'root'

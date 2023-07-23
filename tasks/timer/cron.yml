@@ -4,6 +4,7 @@
   ansible.builtin.cron:
     name: "{{ NFT_ADD_HC.cron_prefix }}_{{ addon_key }}"
     cron_file: "/etc/cron.d/{{ NFT_ADD_HC.cron_prefix }}_{{ addon_key }}"
+    user: 'root'
     minute: "{{ NFT_ADD_CONFIG.timer.cron[addon_key]['minute'] | default(omit, true) }}"
     hour: "{{ NFT_ADD_CONFIG.timer.cron[addon_key]['hour'] | default(omit, true) }}"
     day: "{{ NFT_ADD_CONFIG.timer.cron[addon_key]['day'] | default(omit, true) }}"

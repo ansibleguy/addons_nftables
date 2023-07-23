@@ -87,6 +87,8 @@ You can manage the NFTables base-config using the [ansibleguy.infra_nftables](ht
 
 ### Config
 
+You can find a more detailed example here: [Example](https://github.com/ansibleguy/addons_nftables/blob/stable/Example.md)!
+
 Define the config as needed:
 
 ```yaml
@@ -111,8 +113,11 @@ nftables_addons:
       ntp_servers: ['0.europe.pool.ntp.org', '1.europe.pool.ntp.org']
       repo_debian: ['deb.debian.org', 'debian.map.fastlydns.net', 'security.debian.org']
 
+  ext: 'nft'  # extension used by nftables config-files
   path:
-    base_config: '/etc/nftables.conf'
+    base:
+      config: '/etc/nftables.conf'
+      dir: '/etc/nftables.d'
     addon:
       dir: '/etc/nftables.d/addons'
 

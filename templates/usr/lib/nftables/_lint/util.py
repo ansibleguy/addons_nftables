@@ -13,7 +13,12 @@ from json import JSONDecodeError
 
 CMD_RELOAD = 'sudo systemctl restart nftables.service'
 CONFIG = '/etc/nftables.conf'
+BASE_DIR = '/etc/nftables.d'
 ADDON_DIR = '/etc/nftables.d/addons'
+CONFIG_EXT = 'nft'
+
+if not CONFIG_EXT.startswith('.'):
+    CONFIG_EXT = f'.{CONFIG_EXT}'
 
 FALLBACK_VAR_VALUE = {
     4: '0.0.0.0',
@@ -85,10 +90,10 @@ def _file_hash(file: str) -> str:
 
 
 def validate_and_write(key: str, lines: list, file: str):
-    file_out = f'{file}.nft'
+    file_out = f'{file}{CONFIG_EXT}'
     file_out_path = f'{ADDON_DIR}/{file_out}'
-    file_tmp = f'{FILE_TMP_PREFIX}{key}_{time()}.nft'
-    file_tmp_main = f'{FILE_TMP_PREFIX}main_{time()}.nft'
+    file_tmp = f'{FILE_TMP_PREFIX}{key}_{time()}{CONFIG_EXT}'
+    file_tmp_main = f'{FILE_TMP_PREFIX}main_{time()}{CONFIG_EXT}'
     content = FILE_HEADER + '\n'.join(lines) + '\n'
 
     _write(file=file_tmp, content=content)
@@ -104,15 +109,16 @@ def validate_and_write(key: str, lines: list, file: str):
         addon_includes = ''
 
         for inc in listdir(ADDON_DIR):
-            if inc.endswith('.nft') and inc != file_out:
-                addon_includes += f'include "{inc}"\n'
+            if inc.endswith(CONFIG_EXT) and inc != file_out:
+                addon_includes += f'include "{ADDON_DIR}/{inc}"\n'
+
+        if BASE_DIR not in ['', ' ']:
+            addon_includes += f'include "{BASE_DIR}/*{CONFIG_EXT}"\n'
 
         _write(
             file=file_tmp_main,
             content=f'include "{file_tmp}"\n'
-                    f'{addon_includes}'
-                    'include "/etc/nftables/*.nft"\n'
-            # NOTE: could be a problem if other file-endings are used..
+                    f'{addon_includes}\n'
         )
 
         if _validate(file=file_tmp_main):

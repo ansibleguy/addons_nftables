@@ -12,7 +12,106 @@
         - '/etc/nftables.d/addons/iplist.nft'
         - '/etc/nftables.conf'
 
+    - name: Checking that addon-config include exists
+      ansible.builtin.shell: |
+        set -o pipefail
+        cat /etc/nftables.conf | grep -q 'include "/etc/nftables.d/addons/\*.nft"'
+      changed_when: false
+      args:
+        executable: '/bin/bash'
+
     - name: Checking that service survives restart
       ansible.builtin.systemd:
         name: 'nftables.service'
         state: restarted
+      changed_when: false
+
+- name: Verify Systemd-Setup
+  hosts: test-ag-nftablesaddons-systemd
+  gather_facts: false
+  tasks:
+    - name: Checking that systemd files exist
+      ansible.builtin.stat:
+        path: "/etc/systemd/system/ansibleguy.addons_nftables-{{ item }}"
+      register: nft_systemd_file
+      failed_when: not nft_systemd_file.stat.exists
+      loop:
+        - 'dns.timer'
+        - 'dns.service'
+        - 'iplist.timer'
+        - 'iplist.service'
+
+    - name: Checking that timers are running and enabled
+      ansible.builtin.systemd:
+        name: "ansibleguy.addons_nftables-{{ item }}.timer"
+        state: started
+        enabled: true
+      register: nft_systemd_timer
+      failed_when: nft_systemd_timer.changed
+      loop:
+        - 'dns'
+        - 'iplist'
+
+    - name: Checking DNS config
+      ansible.builtin.shell: |
+        set -o pipefail
+        cat /etc/nftables.d/addons/dns.nft | grep -q '{{ item }}'
+      changed_when: false
+      args:
+        executable: '/bin/bash'
+      loop:
+        - 'Auto-Generated config - DO NOT EDIT MANUALLY!'
+        - 'define site_github_v4 = {'
+        - 'define site_github_v6 = {'
+        - 'define repo_debian_v4 = {'
+        - 'define repo_debian_v6 = {'
+        - 'define ntp_pool_v4 = {'
+        - 'define ntp_pool_v6 = {'
+        - 'define site_ansibleguy_v4 = {'
+        - 'define site_ansibleguy_v6 = {'
+
+    - name: Checking IPList config
+      ansible.builtin.shell: |
+        set -o pipefail
+        cat /etc/nftables.d/addons/iplist.nft | grep -q '{{ item }}'
+      changed_when: false
+      args:
+        executable: '/bin/bash'
+      loop:
+        - 'define tor_exit_nodes_v4 = {'
+        - 'define tor_exit_nodes_v6 = {'
+        - 'define spamhaus_edrop_v4 = {'
+        - 'define spamhaus_edrop_v6 = {'
+
+- name: Verify Cron-Setup
+  hosts: test-ag-nftablesaddons-cron
+  gather_facts: false
+  tasks:
+    - name: Checking cron file exists
+      ansible.builtin.stat:
+        path: "/etc/cron.d/nftables_addon_{{ item }}"
+      register: nft_cron
+      failed_when: not nft_cron.stat.exists
+      loop:
+        - 'dns'
+        - 'iplist'
+
+    - name: Checking DNS config
+      ansible.builtin.shell: |
+        set -o pipefail
+        cat /etc/nftables.d/addons/dns.nft | grep -q '{{ item }}'
+      changed_when: false
+      args:
+        executable: '/bin/bash'
+      loop:
+        - 'define site_ansibleguy = {'
+
+    - name: Checking IPList config
+      ansible.builtin.shell: |
+        set -o pipefail
+        cat /etc/nftables.d/addons/iplist.nft | grep -q '{{ item }}'
+      changed_when: false
+      args:
+        executable: '/bin/bash'
+      loop:
+        - 'define tor_exit_nodes = {'

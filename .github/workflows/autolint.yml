@@ -51,7 +51,6 @@ jobs:
         run: |
           mkdir -p '/tmp/ansible_lint/roles/'
           ln -s "${{ github.workspace }}" "/tmp/ansible_lint/roles/ansibleguy.${{ github.event.repository.name }}"
-          ansible-galaxy role install -r requirements.yml -p /tmp/ansible_lint/roles
         shell: bash
 
       - name: Running AnsibleLint
