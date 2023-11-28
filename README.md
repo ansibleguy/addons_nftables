@@ -19,6 +19,10 @@ Role to deploy Addons for NFTables on Linux servers.
 ## Install
 
 ```bash
+# latest
+ansible-galaxy role install git+https://github.com/ansibleguy/addons_nftables
+
+ä from galaxy
 ansible-galaxy install ansibleguy.addons_nftables
 
 # or to custom role-path
