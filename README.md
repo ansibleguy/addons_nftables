@@ -39,54 +39,7 @@ ansible-galaxy install ansibleguy.addons_nftables --roles-path ./roles
 * Check out the [Example](https://github.com/ansibleguy/addons_nftables/blob/stable/Example.md)!
 * Ansible-manage all of NFTables: [ansibleguy.infra_nftables](https://github.com/ansibleguy/infra_nftables/blob/main/README.md)
 
-
-## Functionality
-
-* **Configuration**
-
-  * **Default config**:
-    * Systemd Timer to run the addons
-    * Logging to Syslog
-    * Appendix for IPv6 variables: '_v6'
-      * Per example: variable 'repo_debian' => 'repo_debian_v6'
-    * Timers
-      * DNS => updated every 15 minutes
-      * IP-List => updated twice a day
-    * Systemd
-      * Syslog ID: 'nftables_addon_{ addon }'
-      * Service/Timer Prefix: 'ansibleguy.addons_nftables-'
-
-  * **Default opt-ins**:
-    * Timer to automatically update variables
-    * Systemd Timer
-    * Adding include into '/etc/nftables.conf'
-
-
-  * **Default opt-outs**:
-    * **Add-Ons**
-      * DNS
-        * DNS IPv6 processing
-      * IP-Lists
-        * IP-List IPv6 processing
-    * Cron-Job Timer
-
-## Info
-
-* **Note:** this role currently only supports debian-based systems
-
-
-* **Note:** Most of the role's functionality can be opted in or out.
-
-  For all available options - see the default-config located in [the main defaults-file](https://github.com/ansibleguy/addons_nftables/blob/latest/defaults/main/1_main.yml)!
-
-
-* **Warning:** Not every setting/variable you provide will be checked for validity. Bad config might break the role!
-
-
-* **Note:** **Every defined variable will be created** as a missing one might break your config!
-
-  If a DNS-record cannot be resolved or no entry is returned - a fallback value (_IPv4: 0.0.0.0, IPv6: ::_) will be set.
-
+----
 
 ## Usage
 
@@ -158,3 +111,54 @@ To debug errors - you can set the 'debug' variable at runtime:
 ```bash
 ansible-playbook -K -D -i inventory/hosts.yml playbook.yml -e debug=yes
 ```
+
+----
+
+## Functionality
+
+* **Configuration**
+
+  * **Default config**:
+    * Systemd Timer to run the addons
+    * Logging to Syslog
+    * Appendix for IPv6 variables: '_v6'
+      * Per example: variable 'repo_debian' => 'repo_debian_v6'
+    * Timers
+      * DNS => updated every 15 minutes
+      * IP-List => updated twice a day
+    * Systemd
+      * Syslog ID: 'nftables_addon_{ addon }'
+      * Service/Timer Prefix: 'ansibleguy.addons_nftables-'
+
+  * **Default opt-ins**:
+    * Timer to automatically update variables
+    * Systemd Timer
+    * Adding include into '/etc/nftables.conf'
+
+
+  * **Default opt-outs**:
+    * **Add-Ons**
+      * DNS
+        * DNS IPv6 processing
+      * IP-Lists
+        * IP-List IPv6 processing
+    * Cron-Job Timer
+
+----
+
+## Info
+
+* **Note:** this role currently only supports debian-based systems
+
+
+* **Note:** Most of the role's functionality can be opted in or out.
+
+  For all available options - see the default-config located in [the main defaults-file](https://github.com/ansibleguy/addons_nftables/blob/latest/defaults/main/1_main.yml)!
+
+
+* **Warning:** Not every setting/variable you provide will be checked for validity. Bad config might break the role!
+
+
+* **Note:** **Every defined variable will be created** as a missing one might break your config!
+
+  If a DNS-record cannot be resolved or no entry is returned - a fallback value (_IPv4: 0.0.0.0, IPv6: ::_) will be set.
