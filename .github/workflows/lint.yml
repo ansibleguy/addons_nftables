@@ -64,6 +64,7 @@ jobs:
         run: |
           mkdir -p '/tmp/ansible_lint/roles/'
           ln -s "${{ github.workspace }}" "/tmp/ansible_lint/roles/ansibleguy.${{ github.event.repository.name }}"
+          ansible-galaxy collection install community.general
         shell: bash
 
       - name: Running AnsibleLint
