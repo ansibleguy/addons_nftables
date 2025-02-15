@@ -37,6 +37,7 @@ provisioner:
   config_options:
     defaults:
       remote_tmp: '/tmp'
+      no_target_syslog: true
 verifier:
   name: ansible
 scenario:
