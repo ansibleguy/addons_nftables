@@ -11,6 +11,7 @@
   ansible.builtin.include_tasks: timer/systemd.yml
   vars:
     systemd_name: "{{ NFT_ADD_CONFIG.timer.systemd.service_prefix }}{{ addon_key }}"
+    systemd_name_legacy: "{{ NFT_ADD_CONFIG.timer.systemd.service_prefix_old }}{{ addon_key }}"
   when:
     - NFT_ADD_CONFIG.enable.timer | bool
     - NFT_ADD_CONFIG.enable.systemd | bool

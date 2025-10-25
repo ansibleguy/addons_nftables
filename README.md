@@ -6,16 +6,16 @@
 
 Role to deploy Addons for NFTables on Linux servers.
 
-[![Lint](https://github.com/ansibleguy/addons_nftables/actions/workflows/lint.yml/badge.svg)](https://github.com/ansibleguy/addons_nftables/actions/workflows/lint.yml)
-[![Ansible Galaxy](https://badges.ansibleguy.net/galaxy.badge.svg)](https://galaxy.ansible.com/ui/standalone/roles/ansibleguy/addons_nftables)
+[![Lint](https://github.com/O-X-L/ansible-role-nftables-addons/actions/workflows/lint.yml/badge.svg)](https://github.com/O-X-L/ansible-role-nftables-addons/actions/workflows/lint.yml)
+[![Ansible Galaxy](https://badges.oss.oxl.app/galaxy.badge.svg)](https://galaxy.ansible.com/ui/standalone/roles/oxlorg/nftables_addons)
 
 **Molecule Integration-Tests**:
 
-* Status: [![Molecule Test Status](https://badges.ansibleguy.net/addons_nftables.molecule.svg)](https://github.com/ansibleguy/_meta_cicd/blob/latest/templates/usr/local/bin/cicd/molecule.sh.j2) |
-[![Functional-Tests](https://github.com/ansibleguy/addons_nftables/actions/workflows/integration_test_result.yml/badge.svg)](https://github.com/ansibleguy/addons_nftables/actions/workflows/integration_test_result.yml)
-* Logs: [API](https://ci.ansibleguy.net/api/job/ansible-test-molecule-addons_nftables/logs?token=2b7bba30-9a37-4b57-be8a-99e23016ce70&lines=1000) | [Short](https://badges.ansibleguy.net/log/molecule_addons_nftables_test_short.log) | [Full](https://badges.ansibleguy.net/log/molecule_addons_nftables_test.log)
+* Status: [![Molecule Test Status](https://badges.oss.oxl.app/addons_nftables.molecule.svg)](https://github.com/O-X-L/ansible-role-oxl-cicd/blob/latest/templates/usr/local/bin/cicd/molecule.sh.j2) |
+[![Functional-Tests](https://github.com/O-X-L/ansible-role-nftables-addons/actions/workflows/integration_test_result.yml/badge.svg)](https://github.com/O-X-L/ansible-role-nftables-addons/actions/workflows/integration_test_result.yml)
+* Logs: [API](https://ci.oss.oxl.app/api/job/ansible-test-molecule-addons_nftables/logs?token=2b7bba30-9a37-4b57-be8a-99e23016ce70&lines=1000) | [Short](https://badges.oss.oxl.app/log/molecule_addons_nftables_test_short.log) | [Full](https://badges.oss.oxl.app/log/molecule_addons_nftables_test.log)
 
-Internal CI: [Tester Role](https://github.com/ansibleguy/_meta_cicd) | [Jobs API](https://github.com/O-X-L/github-self-hosted-jobs-systemd)
+Internal CI: [Tester Role](https://github.com/O-X-L/ansible-role-oxl-cicd) | [Jobs API](https://github.com/O-X-L/github-self-hosted-jobs-systemd)
 
 **Tested:**
 * Debian 11
@@ -27,13 +27,13 @@ Internal CI: [Tester Role](https://github.com/ansibleguy/_meta_cicd) | [Jobs API
 
 ```bash
 # latest
-ansible-galaxy role install git+https://github.com/ansibleguy/addons_nftables
+ansible-galaxy role install git+https://github.com/O-X-L/ansible-role-nftables-addons
 
 ä from galaxy
-ansible-galaxy install ansibleguy.addons_nftables
+ansible-galaxy install oxlorg.nftables_addons
 
 # or to custom role-path
-ansible-galaxy install ansibleguy.addons_nftables --roles-path ./roles
+ansible-galaxy install oxlorg.nftables_addons --roles-path ./roles
 ```
 
 ----
@@ -41,8 +41,8 @@ ansible-galaxy install ansibleguy.addons_nftables --roles-path ./roles
 ## Documentation
 
 * NFTables: [Wiki](https://wiki.nftables.org/wiki-nftables/index.php/Quick_reference-nftables_in_10_minutes)
-* Check out the [Example](https://github.com/ansibleguy/addons_nftables/blob/stable/Example.md)!
-* Ansible-manage all of NFTables: [ansibleguy.infra_nftables](https://github.com/ansibleguy/infra_nftables/blob/main/README.md)
+* Check out the [Example](https://github.com/O-X-L/ansible-role-nftables-addons/blob/stable/Example.md)!
+* Ansible-manage all of NFTables: [oxlorg.nftables](https://github.com/O-X-L/ansible-role-nftables/blob/main/README.md)
 
 ----
 
@@ -60,17 +60,17 @@ ansible-galaxy install ansibleguy.addons_nftables --roles-path ./roles
 
 * You want a simple **Ansible GUI**?
 
-  Check-out this [Ansible WebUI](https://github.com/ansibleguy/webui)
+  Check-out this [Ansible WebUI](https://github.com/O-X-L/ansible-webui)
 
 ----
 
 ## Usage
 
-You can manage the NFTables base-config using the [ansibleguy.infra_nftables](https://github.com/ansibleguy/infra_nftables) role!
+You can manage the NFTables base-config using the [oxlorg.nftables](https://github.com/O-X-L/ansible-role-nftables) role!
 
 ### Config
 
-You can find a more detailed example here: [Example](https://github.com/ansibleguy/addons_nftables/blob/stable/Example.md)!
+You can find a more detailed example here: [Example](https://github.com/O-X-L/ansible-role-nftables-addons/blob/stable/Example.md)!
 
 Define the config as needed:
 
@@ -151,7 +151,7 @@ ansible-playbook -K -D -i inventory/hosts.yml playbook.yml -e debug=yes
       * IP-List => updated twice a day
     * Systemd
       * Syslog ID: 'nftables_addon_{ addon }'
-      * Service/Timer Prefix: 'ansibleguy.addons_nftables-'
+      * Service/Timer Prefix: 'nftables-addon-'
 
   * **Default opt-ins**:
     * Timer to automatically update variables
@@ -176,7 +176,7 @@ ansible-playbook -K -D -i inventory/hosts.yml playbook.yml -e debug=yes
 
 * **Note:** Most of the role's functionality can be opted in or out.
 
-  For all available options - see the default-config located in [the main defaults-file](https://github.com/ansibleguy/addons_nftables/blob/latest/defaults/main/1_main.yml)!
+  For all available options - see the default-config located in [the main defaults-file](https://github.com/O-X-L/ansible-role-nftables-addons/blob/latest/defaults/main/1_main.yml)!
 
 
 * **Warning:** Not every setting/variable you provide will be checked for validity. Bad config might break the role!

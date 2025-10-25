@@ -7,4 +7,4 @@
   become: true
   gather_facts: yes
   roles:
-    - ansibleguy.addons_nftables
+    - oxlorg.nftables_addons

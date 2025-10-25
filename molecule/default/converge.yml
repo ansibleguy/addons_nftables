@@ -29,10 +29,10 @@
           site_github: ['github.com', 'codeload.github.com']
           repo_debian: 'deb.debian.org'
           ntp_pool: 'europe.pool.ntp.org'
-          site_ansibleguy: 'ansibleguy.net'
+          site_oxlorg: 'oxl.at'
 
   roles:
-    - ansibleguy.addons_nftables
+    - oxlorg.nftables_addons
 
 - name: Converge with Cron
   hosts: test-ag-nftablesaddons-cron
@@ -53,7 +53,7 @@
             urls: 'https://check.torproject.org/torbulkexitlist'
 
         dns_records:
-          site_ansibleguy: 'ansibleguy.net'
+          site_oxlorg: 'oxl.at'
 
   roles:
-    - ansibleguy.addons_nftables
+    - oxlorg.nftables_addons

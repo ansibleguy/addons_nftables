@@ -17,3 +17,19 @@
     state: started
     enabled: true
     daemon_reload: yes
+
+- name: "NFTables-Addons | Timer | Systemd | {{ addon_key }} | Remove legacy (1/2)"
+  ansible.builtin.systemd:
+    name: "{{ systemd_name_legacy }}.timer"
+    state: stopped
+    enabled: false
+  register: legacy_svc_removal
+  failed_when:
+    - legacy_svc_removal.failed
+    - "'does not exist' not in legacy_svc_removal.msg"
+    - "'Could not find' not in legacy_svc_removal.msg"
+
+- name: "NFTables-Addons | Timer | Systemd | {{ addon_key }} | Remove legacy (2/2)"
+  ansible.builtin.file:
+    path: "/etc/systemd/system/{{ systemd_name_legacy }}.{{ item }}"
+    state: absent

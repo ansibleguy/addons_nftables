@@ -56,7 +56,8 @@ defaults_nftables_addons:
       dns: '*:0/15'  # every 15min
       iplist: '*-*-* 00,12:00:00'  # twice a day
       syslog_id_prefix: 'nftables_addon'
-      service_prefix: 'ansibleguy.addons_nftables-'
+      service_prefix: 'nftables-addon-'
+      service_prefix_old: 'oxlorg.nftables_addons-'
 
     cron:  # see module: ansible.builtin.cron and https://crontab.guru/
       dns:  # every 15min

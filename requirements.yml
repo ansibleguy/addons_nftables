@@ -3,4 +3,5 @@
 # install: ansible-galaxy install -r requirements.yml
 
 roles:
-  - src: 'ansibleguy.infra_nftables'
+  - name: 'oxlorg.nftables'
+    src: 'git+https://github.com/O-X-L/ansible-role-nftables'

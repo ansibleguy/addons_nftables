@@ -32,7 +32,7 @@
   tasks:
     - name: Checking that systemd files exist
       ansible.builtin.stat:
-        path: "/etc/systemd/system/ansibleguy.addons_nftables-{{ item }}"
+        path: "/etc/systemd/system/nftables-addon-{{ item }}"
       register: nft_systemd_file
       failed_when: not nft_systemd_file.stat.exists
       loop:
@@ -43,7 +43,7 @@
 
     - name: Checking that timers are running and enabled
       ansible.builtin.systemd:
-        name: "ansibleguy.addons_nftables-{{ item }}.timer"
+        name: "nftables-addon-{{ item }}.timer"
         state: started
         enabled: true
       register: nft_systemd_timer
@@ -67,8 +67,8 @@
         - 'define repo_debian_v6 = {'
         - 'define ntp_pool_v4 = {'
         - 'define ntp_pool_v6 = {'
-        - 'define site_ansibleguy_v4 = {'
-        - 'define site_ansibleguy_v6 = {'
+        - 'define site_oxlorg_v4 = {'
+        - 'define site_oxlorg_v6 = {'
 
     - name: Checking IPList config
       ansible.builtin.shell: |
@@ -104,7 +104,7 @@
       args:
         executable: '/bin/bash'
       loop:
-        - 'define site_ansibleguy = {'
+        - 'define site_oxlorg = {'
 
     - name: Checking IPList config
       ansible.builtin.shell: |
