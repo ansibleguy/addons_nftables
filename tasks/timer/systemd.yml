@@ -33,3 +33,6 @@
   ansible.builtin.file:
     path: "/etc/systemd/system/{{ systemd_name_legacy }}.{{ item }}"
     state: absent
+  loop:
+    - 'service'
+    - 'timer'
